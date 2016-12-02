@@ -1,4 +1,6 @@
 run "rm Gemfile"
+
+# Base Gemfile
 file 'Gemfile', <<-RUBY
 source 'https://rubygems.org'
 ruby '#{RUBY_VERSION}'
