@@ -15,6 +15,7 @@ gem 'jquery-rails'
 gem 'jbuilder'
 gem 'bourbon'
 gem 'neat'
+gem 'simple_form'
 
 group :development, :test do
   gem 'byebug', platform: :mri
@@ -53,7 +54,7 @@ after_bundle do
   inside('app/assets/stylesheets') do
     run 'bitters install'
   end
-
+  rails_command 'simple_form:install'
   run "rm .gitignore"
   file '.gitignore', <<-TXT
     .bundle
