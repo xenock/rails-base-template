@@ -1,6 +1,7 @@
+run 'gem install bitters'
 run "rm Gemfile"
 
-# Base Gemfile
+# Base Gem
 file 'Gemfile', <<-RUBY
 source 'https://rubygems.org'
 ruby '#{RUBY_VERSION}'
@@ -12,6 +13,8 @@ gem 'sass-rails'
 gem 'uglifier'
 gem 'jquery-rails'
 gem 'jbuilder'
+gem 'bourbon'
+gem 'neat'
 
 group :development, :test do
   gem 'byebug', platform: :mri
@@ -22,10 +25,20 @@ group :development do
   gem 'listen'
   gem 'spring'
   gem 'spring-watcher-listen'
+  gem "refills"
 end
 
 RUBY
 
+# Bourbon
+run 'rm app/assets/stylesheets/application.css'
+file 'app/assets/stylesheets/application.scss', <<-CSS
+  @import "bourbon";
+  @import "neat";
+  @import "base/base";
+CSS
+
+# Generators
 generators = <<-RUBY
 config.generators do |generate|
       generate.assets false
@@ -33,3 +46,25 @@ config.generators do |generate|
 RUBY
 
 environment generators
+
+after_bundle do
+  rails_command 'db:drop db:create db:migrate'
+  inside('app/assets/stylesheets') do
+    run 'bitters install'
+  end
+
+  run "rm .gitignore"
+  file '.gitignore', <<-TXT
+    .bundle
+    log/*.log
+    tmp/**/*
+    tmp/*
+    *.swp
+    .DS_Store
+    public/assets
+  TXT
+
+  git :init
+  git add: "."
+  git commit: %Q{ -m 'Initial commit' }
+end
