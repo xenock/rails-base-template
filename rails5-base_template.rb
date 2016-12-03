@@ -1,4 +1,5 @@
 run 'gem install bitters'
+run 'gem install spring-commands-rspec'
 run "rm Gemfile"
 
 # Base Gem
@@ -19,6 +20,7 @@ gem 'simple_form'
 
 group :development, :test do
   gem 'byebug', platform: :mri
+  gem 'rspec-rails'
 end
 
 group :development do
@@ -50,11 +52,13 @@ RUBY
 environment generators
 
 after_bundle do
+  run 'spring stop'
   rails_command 'db:drop db:create db:migrate'
   inside('app/assets/stylesheets') do
     run 'bitters install'
   end
-  rails_command 'simple_form:install'
+  generate 'simple_form:install'
+  generate 'rspec:install'
   run "rm .gitignore"
   file '.gitignore', <<-TXT
     .bundle
