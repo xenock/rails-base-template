@@ -17,6 +17,7 @@ gem 'jbuilder'
 gem 'bourbon'
 gem 'neat'
 gem 'simple_form'
+gem 'devise'
 
 group :development, :test do
   gem 'byebug', platform: :mri
@@ -24,6 +25,7 @@ group :development, :test do
   gem 'factory_girl_rails'
   gem 'capybara'
   gem 'capybara-webkit'
+  gem 'guard-rspec', require: false
 end
 
 group :development do
@@ -48,8 +50,8 @@ CSS
 # Generators
 generators = <<-RUBY
 config.generators do |generate|
-      generate.assets false
-    end
+    generate.assets false
+  end
 RUBY
 
 environment generators
@@ -62,6 +64,11 @@ after_bundle do
   end
   generate 'simple_form:install'
   generate 'rspec:install'
+  run 'bundle exec guard init rspec'
+  generate 'devise:install'
+  generate 'devise User name:string surname:string telephone:integer address:string'
+  generate 'devise:views'
+  environment "config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }", env: 'development'
   run "rm .gitignore"
   file '.gitignore', <<-TXT
     .bundle
