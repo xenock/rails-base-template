@@ -35,6 +35,7 @@ group :development do
   gem 'spring-watcher-listen'
   gem "refills"
   gem "better_errors"
+  gem 'rails-erd'
 end
 
 RUBY
