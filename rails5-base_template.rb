@@ -18,14 +18,11 @@ gem 'bourbon'
 gem 'neat'
 gem 'simple_form'
 gem 'devise'
+gem 'kaminari'
 
 group :development, :test do
   gem 'byebug', platform: :mri
-  gem 'rspec-rails'
-  gem 'factory_girl_rails'
-  gem 'capybara'
-  gem 'capybara-webkit'
-  gem 'guard-rspec', require: false
+  gem 'minitest-reporters'
 end
 
 group :development do
@@ -36,6 +33,8 @@ group :development do
   gem "refills"
   gem "better_errors"
   gem 'rails-erd'
+  gem 'guard-rails', require: false
+  gem 'guard-livereload', require: false
 end
 
 RUBY
@@ -63,23 +62,27 @@ after_bundle do
   inside('app/assets/stylesheets') do
     run 'bitters install'
   end
+  inject_into_file 'test/test_helper.rb', after: "require 'rails/test_help'\n" do <<-'RUBY'
+require 'minitest/reporters'
+Minitest::Reporters.use!(
+  Minitest::Reporters::ProgressReporter.new,
+  ENV,
+  Minitest.backtrace_filter)
+  RUBY
+  end
   generate 'simple_form:install'
-  generate 'rspec:install'
-  run 'bundle exec guard init rspec'
+  run 'guard init rails'
   generate 'devise:install'
   generate 'devise User name:string surname:string telephone:integer address:string'
   generate 'devise:views'
   environment "config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }", env: 'development'
   run "rm .gitignore"
   file '.gitignore', <<-TXT
-    .bundle
-    log/*.log
-    tmp/**/*
-    tmp/*
-    *.swp
-    .DS_Store
-    public/assets
-  TXT
+.bundle
+/log
+/tmp
+public/assets
+TXT
 
   git :init
   git add: "."
