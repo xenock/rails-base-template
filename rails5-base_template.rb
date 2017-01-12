@@ -1,4 +1,3 @@
-run 'gem install bitters'
 run 'gem install spring-commands-rspec'
 run "rm Gemfile"
 
@@ -14,8 +13,7 @@ gem 'sass-rails'
 gem 'uglifier'
 gem 'jquery-rails'
 gem 'jbuilder'
-gem 'bourbon'
-gem 'neat'
+gem 'bootstrap', '~> 4.0.0.alpha6'
 gem 'simple_form'
 gem 'devise'
 gem 'kaminari'
@@ -30,7 +28,7 @@ group :development do
   gem 'listen'
   gem 'spring'
   gem 'spring-watcher-listen'
-  gem "refills"
+
   gem "better_errors"
   gem 'rails-erd'
   gem 'guard-rails', require: false
@@ -39,13 +37,20 @@ end
 
 RUBY
 
-# Bourbon
+# Bootstrap
 run 'rm app/assets/stylesheets/application.css'
 file 'app/assets/stylesheets/application.scss', <<-CSS
-  @import "bourbon";
-  @import "neat";
-  @import "base/base";
+  @import "bootstrap";
 CSS
+
+run 'rm app/assets/javascripts/application.js'
+file 'app/assets/javascripts/application.js', <<-JS
+  //= require jquery
+  //= require jquery_ujs
+  //= require turbolinks
+  //= require boostrap-sprockets
+  //= require_tree .
+JS
 
 # Generators
 generators = <<-RUBY
@@ -59,9 +64,6 @@ environment generators
 after_bundle do
   run 'spring stop'
   rails_command 'db:drop db:create db:migrate'
-  inside('app/assets/stylesheets') do
-    run 'bitters install'
-  end
   inject_into_file 'test/test_helper.rb', after: "require 'rails/test_help'\n" do <<-'RUBY'
 require 'minitest/reporters'
 Minitest::Reporters.use!(
@@ -75,6 +77,7 @@ Minitest::Reporters.use!(
   generate 'devise:install'
   generate 'devise User name:string surname:string telephone:integer address:string'
   generate 'devise:views'
+  rails_command 'db:migrate'
   environment "config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }", env: 'development'
   run "rm .gitignore"
   file '.gitignore', <<-TXT
