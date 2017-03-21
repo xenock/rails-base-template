@@ -1,0 +1,29 @@
+source 'https://rubygems.org'
+#ruby '#{RUBY_VERSION}'
+
+gem 'rails'
+gem 'pg'
+gem 'puma'
+gem 'sass-rails'
+gem 'uglifier'
+gem 'jquery-rails'
+gem 'simple_form'
+gem 'devise'
+gem 'kaminari'
+
+group :development, :test do
+  gem 'byebug', platform: :mri
+  gem 'minitest-reporters'
+end
+
+group :development do
+  gem 'web-console'
+  gem 'listen'
+  gem 'spring'
+  gem 'spring-watcher-listen'
+
+  gem "better_errors"
+  gem 'rails-erd'
+  gem 'guard-rails', require: false
+  gem 'guard-livereload', require: false
+end

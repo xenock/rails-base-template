@@ -1,0 +1,7 @@
+.bundle
+/log
+/tmp
+public/assets
+erd.pdf
+public/uploads/
+config/secrets.yml
